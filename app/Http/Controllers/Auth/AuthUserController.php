@@ -28,7 +28,7 @@ class AuthUserController extends Controller
         ]);
         $token = $user->createToken('main')->plainTextToken;
         return response([
-            'user' => $data,
+            'user' => $user,
             'token' => $token
         ]);
         // return new AuthUserResource($user   s);
@@ -44,7 +44,7 @@ class AuthUserController extends Controller
         ]);
         if (!Auth::attempt($credentials)) {
             return response([
-                'message' => 'This Provided credentials are not correct'
+                'error' => 'This Provided credentials are not correct'
             ], 422);
         }
         $user = Auth::user();
@@ -54,29 +54,42 @@ class AuthUserController extends Controller
             'token' => $token
         ]);
     }
-    public function mobile(Request $request)
+
+    public function logout()
     {
-        $data = $request->validate([
-            'firstname' => 'required|string',
-            'surname' => 'required|string',
-            'email' => 'required|email|string|unique:users,email',
-            'gender' => 'required| in:Male,Female,Other',
-            'password' => ['required', 'confirmed', Password::min(4)->mixedCase()->numbers()->symbols()],
-        ]);
-        $user = User::create([
-            'firstname' => $data['firstname'],
-            'surname' => $data['surname'],
-            'gender' => $data['gender'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password'])
-        ]);
-        $token = $user->createToken('main')->plainTextToken;
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
         return response([
-            'user' => $data,
-            'token' => $token
+            'success' => true
         ]);
-        // return new AuthUserResource($user   s);
     }
+
+
+
+
+    // public function mobile(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'firstname' => 'required|string',
+    //         'surname' => 'required|string',
+    //         'email' => 'required|email|string|unique:users,email',
+    //         'gender' => 'required| in:Male,Female,Other',
+    //         'password' => ['required', 'confirmed', Password::min(4)->mixedCase()->numbers()->symbols()],
+    //     ]);
+    //     $user = User::create([
+    //         'firstname' => $data['firstname'],
+    //         'surname' => $data['surname'],
+    //         'gender' => $data['gender'],
+    //         'email' => $data['email'],
+    //         'password' => bcrypt($data['password'])
+    //     ]);
+    //     $token = $user->createToken('main')->plainTextToken;
+    //     return response([
+    //         'user' => $data,
+    //         'token' => $token
+    //     ]);
+    //     // return new AuthUserResource($user   s);
+    // }
     // public function mobilv1(Request $request)
     // {
     //     $data = $request->validate([

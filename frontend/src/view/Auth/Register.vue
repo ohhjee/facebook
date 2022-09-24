@@ -1,8 +1,13 @@
 <template>
     <div class="lg:hidden">
         <div class="container mx-auto">
-            <div class="header">
-                <div class="text-center bg-[#3b5a99] flex items-center h-[50px] mb-4 justify-center">
+            <div class="header w-full flex justify-between bg-[#3b5a99] py-4">
+                <div class="w-1/2">
+                    <router-link :to="{name: 'Login'}">
+                        <ArrowLeftIcon class="w-4 h-4"/>
+                    </router-link>
+                </div>
+                <div class="text-center w-1/2 flex items-start justify-start">
                     <p class="text-white font-bold text-[14px] ">
                         Join facebook
                     </p>
@@ -231,7 +236,8 @@ import { ref } from 'vue';
 import {
     QuestionMarkCircleIcon,
     XMarkIcon,
-    PlusIcon
+    PlusIcon,
+    ArrowLeftIcon
 } from '@heroicons/vue/20/solid';
 import Footer from '../../components/footer.vue';
 import Alert from "../../components/Alert.vue"

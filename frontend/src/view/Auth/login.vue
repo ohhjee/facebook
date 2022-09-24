@@ -1,6 +1,7 @@
 <template>
     <div>
         <div class="hidden lg:block min-h-screen">
+
             <!-- LOGIN -->
             <div id="fixed" class="container mx-auto  min-h-screen">
                 <div class="w-10/12 min-h-screen mx-auto">
@@ -10,6 +11,7 @@
                                 Facebook
                             </div>
                             <div class="text-3xl mt-4">
+                                {{ errorMsg}}
                                 Facebook helps you connect and share with the people in your life.
                             </div>
                         </div>
@@ -280,6 +282,7 @@ import Footer from '../../components/footer.vue';
 
 const route = useRouter()
 
+const errorMsg = ref<string>('')
 const user = {
     firstname:'',
     surname:'',
@@ -297,11 +300,22 @@ function register(){
     })
 }
 
+
+store.dispatch("getUSerlogin")
+
 function login(){
     store.dispatch('login', user).then(()=>{
         route.push({
             name:"Dashboard"
+        }).catch((err) => {
+             if(err.response.status === 422){
+        errorMsg.value = err.response.data.error 
+        console.log("hey");
+
+        
+    }
         })
+
     })
 }
     

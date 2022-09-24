@@ -4,6 +4,9 @@ import Register from '../view/Auth/Register.vue'
 import Dashboard from '../view/Dashboard.vue'
 import store from '../store'
 import validateVue from '../view/Auth/validate.vue'
+import DefaultLayoutVue from '../components/DefaultLayout.vue'
+import Post from '../view/post.vue'
+import postViewVue from '../view/postView.vue'
 
 
 
@@ -12,13 +15,21 @@ const routes: Array<RouteRecordRaw> = [
         path: '/',
         redirect: '/dashboard',
         meta: { requireAuth: true },
-        component: Dashboard,
+        component: DefaultLayoutVue,
         children: [
             {
                 path: '/dashboard',
                 name: 'Dashboard',
                 component: Dashboard,
-            },
+            }, {
+                path: '/post',
+                name: "Post",
+                component: Post
+            }, {
+                path: '/postview/:id',
+                name: 'postView',
+                component: postViewVue
+            }
         ]
     },
 
