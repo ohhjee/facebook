@@ -13,22 +13,10 @@
         <!-- <input type="text" name="" id=""> -->
 
     </div>
+        {{router.params.body}}
 
-
-
-    <!-- <div v-for="post in posts" :key="post.id"> -->
-        {{posts}}
-<!-- {{}} -->
-
-    <!-- </div> -->
     </div>
 </div>
-<!-- <div v-for="post in posts" :key="post.id">
-<div class="w-full md:w-10/12 lg:w-8/12 rounded-md mx-auto bg-gray-600/10 shadow-md p-5 mb-5">
-
-post.body}} -->
-  <!-- </div> -->
-<!-- </div> -->
     </PageComponent>
    </div>
 </template>
@@ -40,38 +28,17 @@ import store from '../store';
 import { useRouter,useRoute } from 'vue-router';
 // import {  } from 'vue';
 const stores = computed(()=>store.state.user.data)
-const posts = computed(()=>store.state.currentPost.data)
+const posts = computed(()=>store.state.post.data)
 
 // onMounted(())
 
 const router = useRoute()
 
 store.dispatch("getUser");
-   store.dispatch("getPosts");
-// if (router.params.id) {
-//     store.dispatch('setPosts', router.params.id);
-// }
+if (router.params.id) {
+    store.dispatch("getPosts", router.params.body)
 
-
-
-// const route = useRouter()
-// let fill = {
-//     body: '',
-//     // name:''
-// } as any
-
-// console.log(fill);
-// function PostMind() {
-
-//     store.dispatch('postmind', fill).then(({ data }) => {
-
-//         route.push({
-//             name: "Dashboard",
-//             params:{id:data.data.id}
-//         })
-//         // console.log(fill.body.value);
-//     })
-// }
+}
 
 </script>
 

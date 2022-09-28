@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: "Post",
                 component: Post
             }, {
-                path: '/postview/:id',
+                path: '/postview/:body',
                 name: 'postView',
                 component: postViewVue
             }

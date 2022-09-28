@@ -10,7 +10,7 @@
 <div class="mb-4 w-full bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
 <div class="py-2 px-4 bg-white rounded-t-lg dark:bg-gray-800">
     <label for="comment" class="sr-only">Your comment</label>
-<textarea id="comment" rows="1" v-model="fill.body" name="body" class="px-0 w-full text-sm text-gray-900 scroll-mx-0 resize-none border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="What's on your mind"></textarea>
+<textarea id="comment" rows="1" v-model="fill.body"  class="px-0 w-full text-sm text-gray-900 scroll-mx-0 resize-none border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="What's on your mind"></textarea>
 </div>
 <div class="flex justify-between items-center py-2 px-3 border-t dark:border-gray-600">
 <button type="submit" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
@@ -60,29 +60,37 @@ Loading...
 <div v-for="post in posts" :key="post.id">
 <div class="w-full md:w-10/12 lg:w-8/12 rounded-md mx-auto bg-gray-600/10 shadow-md p-5 mb-5">
 <div class="flex font-semibold items-center basis-1 text-[1.2rem]">
-<a :href="`/postView/${post.id}`">
+<a :href="`/postView/${post.body}`" class="flex">
+<div class="mr-1">
 {{stores.firstname}}
-<!-- {{post.id}} -->
-{{stores.surname}}
+</div>
+    <!-- {{post.id}} -->
+<div class="">
+    {{stores.surname}}
+</div>
 </a>
-<small class="text-xs">{{post.created_at}}</small>
+<small class="text-xs ml-1">{{post.created_at}}</small>
 </div>
 <div class="text-sm">
 {{post.body}}
 </div>
 <hr class="border-gray-500 my-3">
 <div id="actionsection" class="flex justify-between">
-<div>
-<HandThumbUpIcon class="w-6 h-6"/>
-</div>
-<div>
+<!-- <div>
+<HandThumbUpIcon class="w-6 h-6 cursor-pointer hover:text-blue-500 transition-all duration-300 ease-out delay-100" @click="like(post.id)"/>
+{{likes}}
+</div> -->
+<!-- <div>
 <ChatBubbleOvalLeftEllipsisIcon class="w-6 h-6"/>
-</div>
+</div> -->
 <div>
 <ShareIcon class="w-6 h-6" />
 </div>
-<div class="cursor-pointer">
-<TrashIcon @click="deletePost(post.id)" v-if="stores" class="w-6 h-6" />
+<div v-if="stores">
+
+    <div class="cursor-pointer">
+    <TrashIcon @click="deletePost(post.id)" v-if="stores" class="w-6 h-6" />
+    </div>
 </div>
 </div>
 </div>
@@ -109,38 +117,41 @@ import { useRouter } from 'vue-router';
 const stores = computed(()=>store.state.user.data)
 const posts = computed(()=>store.state.post.data)
 
-// onMounted(())
+const loading = computed(() => store.state.post.loading) as any
 
-const loading  = computed(() => store.state.post.loading)
+const likes=computed(()=>store.state.like.data)
 
 store.dispatch("getUser");
-store.dispatch("getPost");
 
-const errorMsg=ref<String>('')
-const route = useRouter()
-let fill = {
-    id:'',
-body: '',
-// name:''
-} as any
 
-console.log(fill);
-function PostMind(fill) {
-store.dispatch('postmind', fill).then(({data}) => {
+const errorMsg=ref<string>('')
+    const route = useRouter()
+    let fill = ref({
+        body: ''
+    })
+
+
+
+
+function PostMind() {
+
+        store.dispatch('postmind', fill.value).then((data) => {
 store.dispatch("getPost");
 route.push({
 name: 'postView',
 params: {id: data.data.id}
 })
-}).catch((err) => {
+    })
+        .catch((err) => {
  if(err.response.status === 422){
-        errorMsg.value = err.response.data.errors.body[0]
-        // loading.value=false
+        errorMsg.value = err.response.data.errors.body
+        loading.value=false
       }
 console.log(errorMsg.value);
 
 })
 }
+store.dispatch("getPost");
 
 function deletePost(post) {
 store.dispatch('deletePost', post).then((res) => {
@@ -148,6 +159,18 @@ store.dispatch("getPost")
 })
 }
 
+
+// function like(post) {
+
+//     store.dispatch('likePost', post).then((res) => {
+//     store.dispatch("getPost")
+//     // console.log(post);
+// route.push({
+// name: 'Post',
+// params: {id: res.data.id}
+// })
+// })
+// }
 </script>
 
 <style scoped>

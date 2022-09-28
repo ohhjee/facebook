@@ -17,10 +17,10 @@ class PostResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'user_id' => $this->user_id,
+            'user_id' => $this->user_id,
             'body' => $this->body,
-            'created_at' => (new DateTime($this->created_at))->format('Y:m:d  H:i:s'),
-            'updated_at' => (new DateTime($this->updated_at))->format('Y:m:d  H:i:s'),
+            'created_at' => (new DateTime($this->created_at))->format('H:i:s'),
+            'updated_at' => (new DateTime($this->updated_at))->format('H:i:s'),
         ];
     }
 }

@@ -31,7 +31,7 @@ class PostRequest extends FormRequest
     {
         return [
             'user_id' => 'exists:users,id',
-            'body' => 'required|string'
+            'body' => 'required'
         ];
     }
 }

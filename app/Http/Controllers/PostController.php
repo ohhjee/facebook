@@ -30,6 +30,7 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        // $data = $request->validated();
         $result = Post::create($request->validated());
         return new PostResource($result);
     }
@@ -57,10 +58,10 @@ class PostController extends Controller
      */
     public function showById(Post $post, Request $request)
     {
-        // $user = $request->user();
-        // if ($user->id !== $post->user_id) {
-        //     return abort(403, 'Unauthorized action');
-        // }
+        $user = $request->user();
+        if ($user->id !== $post->user_id) {
+            return abort(403, 'Unauthorized action');
+        }
 
         return new PostResource($post);
     }

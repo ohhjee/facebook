@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\AuthUserController;
+use App\Http\Controllers\likes;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +22,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::resource('/dashboard', DashboardController::class);
+    Route::get('/dashboard/{post:body}', [DashboardController::class, 'showById']);
     Route::post('/logout', [AuthUserController::class, 'logout']);
     Route::resource('/post', PostController::class);
     Route::get('/post-by-id/{post:id}', [PostController::class, 'showById']);
+    Route::get('/likes/{like:id}/{post:id}', [likes::class, 'index']);
 });
 
 Route::post('/register', [AuthUserController::class, 'register']);

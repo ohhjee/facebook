@@ -17,6 +17,9 @@ const store = createStore({
         dashboard: {
             data: {},
             user: {}
+        },
+        like: {
+            data: {}
         }
     },
     getters: {},
@@ -35,15 +38,24 @@ const store = createStore({
                 return data;
             })
         },
-        dashboard({ commit }) {
-            console.log(store.state.dashboard.user);
-            return axiosClient.get('/dashboard').then((res) => {
-                commit('setDashboard', res.data)
+        dashboard({ commit }, posts) {
 
-                commit('setDashboardUser', res.data)
+            console.log(posts);
 
-                return res
-            })
+            let response
+            if (posts) {
+                response = axiosClient.get(`/dashboard/${posts}`, posts).then((res) => {
+                    commit('setPost', res.data)
+                    return res
+                })
+            } else {
+                response = axiosClient.get('/dashboard').then((res) => {
+                    commit('setDashboard', res.data)
+                    commit("setPost", res.data)
+                    return res
+                })
+            }
+            return response
         },
         getUser({ commit }) {
             return axiosClient.get('/user')
@@ -63,26 +75,38 @@ const store = createStore({
                 response = axiosClient.post("/post", fill).then((res) => {
                     commit("setLoader", false)
                     commit("setPost", res.data)
+
                     return res
                 })
             }
             return response
-        }, getPost({ commit }) {
+        }, getPost({ commit }, post) {
             commit("setLoader", true)
-            return axiosClient.get('/post')
-                .then(res => {
-                    commit("setLoader", false)
-                    commit('setPost', res.data)
+            let response;
+            if (post) {
+                response = axiosClient.get(`/post/${post}`, post).then((res) => {
+                    commit('setPosts', res.data)
                     return res
                 })
+            } else {
+
+                return axiosClient.get('/post')
+                    .then(res => {
+                        commit("setLoader", false)
+                        commit('setPost', res.data)
+
+                        return res
+                    })
+            }
+            return response
         },
-        // getPosts({ commit }, id) {
-        //     console.log(id);
-        //     return axiosClient.get(`/post-by-id'/${id}`)
-        //         .then(res => {
-        //             commit('setPost', res.data)
-        //         })
-        // },
+        getPosts({ commit }, id) {
+            // console.log(id);
+            return axiosClient.get(`/post-by-id'/${id}`)
+                .then(res => {
+                    commit('setPosts', res.data)
+                })
+        },
         deletePost({ }, id) {
             console.log(id);
 
@@ -94,7 +118,14 @@ const store = createStore({
                     commit('logout')
                     return response
                 })
-        }
+        },
+        // likePost({ commit }, id) {
+        //     console.log(id);
+        //     return axiosClient.get(`/likes/${id}/${id}`, id).then((res) => {
+        //         commit('likes', res.data)
+        //     })
+
+        // }
     },
     mutations: {
         setLoader: (state, loader) => {
@@ -106,10 +137,6 @@ const store = createStore({
         setDashboard: (state, dashboard) => {
             state.dashboard.data = dashboard.data
         },
-        setDashboardUser: (state, user) => {
-            state.dashboard.user = user.user
-
-        },
         setToken: (state, token) => {
             state.user.token = token
             sessionStorage.setItem("TOKEN", token)
@@ -117,9 +144,15 @@ const store = createStore({
         setPost: (state, fill) => {
             state.post.data = fill.data
         },
-        // setPosts: (state, post) => {
-        //     state.post.data = post.data
+        likes: (state, likes) => {
+            state.like.data = likes.data
+        },
+        // setDashboardUser: (state, dashboard) => {
+        //     state.dashboard.user = dashboard.user
         // },
+        setPosts: (state, post) => {
+            state.currentPost.data = post.data
+        },
         logout: state => {
             state.user.token = null;
             state.user.data = {} as any;

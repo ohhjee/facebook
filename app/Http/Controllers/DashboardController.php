@@ -8,14 +8,18 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Post $poster, Request $request)
+    public function index(Request $request)
     {
-        $post = $poster->get();
         $user = $request->user();
-        // return PostResource::collection(Post::where('user_id', $user->id)->paginate(50));
+        $post = Post::query()->where('user_id', $user->id);
+        return PostResource::collection(Post::where('user_id', $user->id)->paginate(50));
         return [
             'data' => $post,
             'user' => $user
         ];
+    }
+    public function showById(Post $post, Request $request)
+    {
+        // return new PostResource($post);
     }
 }
